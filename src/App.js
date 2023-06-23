@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import Axios from "axios";
+import { BrowserRouter as Router } from "react-router-dom";
+import Routes from "./routes";
+import { useSelector } from "react-redux";
 
-function App() {
+const RoutesComponent = ({token}) => {
+  if (token) {
+    Axios.defaults.headers.common["Authorization"] = "Token " + token;
+    return <Routes isLoggedIn={true} />;
+  } else {
+    return <Routes isLoggedIn={false} />;
+  }
+}
+
+const App = () => {
+  const baseUrl = 'http://localhost:3000';
+  Axios.defaults.baseURL = baseUrl;
+  const { token } = useSelector((state) => state.auth);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <RoutesComponent token={token} />
+      </Router>
   );
 }
 
